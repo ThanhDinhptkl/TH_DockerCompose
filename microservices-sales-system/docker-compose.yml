@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - payment-service
+      - shipping-service
+    networks:
+      - sales-network
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - redis
+    networks:
+      - sales-network
+
+  shipping-service:
+    build: ./shipping-service
+    ports:
+      - "3003:3003"
+    depends_on:
+      - redis
+    networks:
+      - sales-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - sales-network
+
+networks:
+  sales-network:
+    driver: bridge
